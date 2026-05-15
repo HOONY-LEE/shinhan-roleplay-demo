@@ -56,7 +56,7 @@ export interface TTSOptions {
   voiceId: string;
   speed: number;
   pitch: number;
-  emotion: string;
+  emotion: EmotionState;
 }
 
 export type AppPhase = "setup" | "training" | "evaluation";

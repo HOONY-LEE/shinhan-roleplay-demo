@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { generateSpeech, EMOTION_MODIFIERS } from "@/lib/supertone";
+import { generateSpeech } from "@/lib/supertone";
 import { EmotionState } from "@/types";
 
 export async function POST(req: NextRequest) {
@@ -12,20 +12,19 @@ export async function POST(req: NextRequest) {
       pitch: number;
     };
 
-    const mod = EMOTION_MODIFIERS[emotion] || EMOTION_MODIFIERS.calm;
-
-    const audioBuffer = await generateSpeech({
+    const { audio, durationSec } = await generateSpeech({
       text,
       voiceId,
-      speed: speed * mod.speed,
-      pitch: pitch + mod.pitch,
+      speed,
+      pitch,
       emotion,
     });
 
-    return new NextResponse(audioBuffer, {
+    return new NextResponse(audio, {
       headers: {
         "Content-Type": "audio/mpeg",
         "Cache-Control": "no-cache",
+        "X-Audio-Length": String(durationSec),
       },
     });
   } catch (error) {
